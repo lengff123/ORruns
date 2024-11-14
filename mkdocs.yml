@@ -5,8 +5,8 @@ repo_name: ORruns
 
 theme:
   name: material
-  logo: https://github.com/lengff123/ORruns/blob/main/orruns/assets/logo.png  # 使用GitHub raw链接
-  favicon: https://github.com/lengff123/ORruns/blob/main/orruns/assets/logo.png
+  logo: https://raw.githubusercontent.com/lengff123/ORruns/main/orruns/assets/logo.png  # 使用GitHub raw链接
+  favicon: https://raw.githubusercontent.com/lengff123/ORruns/main/orruns/assets/logo.png
   palette:
     - scheme: default
       primary: indigo
