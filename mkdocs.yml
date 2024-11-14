@@ -1,6 +1,6 @@
 site_name: ORruns Documentation
 site_description: Next-generation Experiment Management Platform for Operations Research
-repo_url: https://github.com/yourusername/ORruns
+repo_url: https://github.com/lengff123/ORruns
 repo_name: ORruns
 
 theme:
