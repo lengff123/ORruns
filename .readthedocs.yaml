@@ -5,9 +5,13 @@ build:
   tools:
     python: "3.8"
 
-mkdocs:
-  configuration: mkdocs.yml
-
 python:
   install:
-    - requirements.txt
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs
+
+mkdocs:
+  configuration: mkdocs.yml
+  fail_on_warning: false
