@@ -59,7 +59,7 @@ def optimize_with_different_seeds(tracker):
 
 ### Intuitive Visualization Interface
 <p align="center">
-  <img src="IMG\PixPin_2024-11-14_00-03-57.png" alt="Dashboard Screenshot" width="600"/>
+  <img src="orruns/assets/web.png" alt="Dashboard Screenshot" width="600"/>
 </p>
 
 ## 🚀 Making Operations Research Better
