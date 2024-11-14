@@ -1,0 +1,44 @@
+/* 全局样式 */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --background-color: #f5f6fa;
+    --text-color: #2c3e50;
+    --card-background: #ffffff;
+    --border-radius: 8px;
+    --shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 暗色主题 */
+[data-theme="dark"] {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --background-color: #1a1a1a;
+    --text-color: #ffffff;
+    --card-background: #2d2d2d;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--background-color);
+}
+
+.nav-title {
+    color: white;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.card {
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 1rem;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.graph {
+    height: 400px;
+}
