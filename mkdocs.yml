@@ -1,0 +1,63 @@
+site_name: ORruns Documentation
+site_description: Next-generation Experiment Management Platform for Operations Research
+repo_url: https://github.com/yourusername/ORruns
+repo_name: ORruns
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - search.suggest
+    - search.highlight
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+    - Core Concepts: getting-started/concepts.md
+  - User Guide:
+    - Experiment Tracking: user-guide/experiment-tracking.md
+    - Parallel Experiments: user-guide/parallel-experiments.md
+    - Visualization: user-guide/visualization.md
+    - CLI Usage: user-guide/cli-usage.md
+  - API Reference:
+    - Tracker: api-reference/tracker.md
+    - Decorators: api-reference/decorators.md
+    - Visualization: api-reference/visualization.md
+    - CLI: api-reference/cli.md
+  - Examples:
+    - Basic Usage: examples/basic-usage.md
+    - Optimization: examples/optimization.md
+    - Advanced Usage: examples/advanced-usage.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - footnotes
+  - attr_list
+  - md_in_html
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
