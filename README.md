@@ -62,6 +62,16 @@ def optimize_with_different_seeds(tracker):
   <img src="orruns/assets/web.png" alt="Dashboard Screenshot" width="600"/>
 </p>
 
+## 🚀 Quick Start
+
+```bash
+pip install orruns
+```
+
+Check out our [Quick Start Guide](https://orruns.readthedocs.io) to begin your first experiment!
+
+
+
 ## 🚀 Making Operations Research Better
 
 We believe that the Operations Research community deserves modern and open tooling ecosystems like those in the machine learning community. ORruns is not just a tool, but a vision - let's together:
@@ -115,13 +125,6 @@ We're planning exciting features to build a more comprehensive Operations Resear
 
 > Check out the complete [roadmap document](ROADMAP.md) for more details and future plans!
 
-## 🚀 Quick Start
-
-```bash
-pip install orruns
-```
-
-Check out our [Quick Start Guide](docs/quickstart.md) to begin your first experiment!
 
 ## 📄 License
 
