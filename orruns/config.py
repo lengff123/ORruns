@@ -5,13 +5,16 @@ from typing import Dict, Any, Optional, Union
 from copy import deepcopy
 
 class ExperimentConfig:
-    """实验配置管理类"""
+    """Experiment configuration management class
+    实验配置管理类"""
     
     def __init__(self, config_file: Optional[Union[str, Path]] = None):
         """
+        Initialize experiment configuration
         初始化实验配置
         
         Args:
+            config_file: Path to the configuration file (supports YAML or JSON)
             config_file: 配置文件路径（支持 YAML 或 JSON）
         """
         self._config = {}
@@ -22,9 +25,11 @@ class ExperimentConfig:
     
     def load_config(self, config_file: Union[str, Path]) -> None:
         """
+        Load configuration from a file
         从文件加载配置
         
         Args:
+            config_file: Path to the configuration file
             config_file: 配置文件路径
         """
         config_file = Path(config_file)
@@ -33,6 +38,7 @@ class ExperimentConfig:
             
         self._config_file = config_file
         
+        # Choose loading method based on file extension
         # 根据文件扩展名选择加载方式
         if config_file.suffix.lower() in ['.yml', '.yaml']:
             with open(config_file, 'r', encoding='utf-8') as f:
@@ -45,9 +51,11 @@ class ExperimentConfig:
     
     def save_config(self, file_path: Optional[Union[str, Path]] = None) -> None:
         """
+        Save configuration to a file
         保存配置到文件
         
         Args:
+            file_path: Save path, if None, use the path from loading
             file_path: 保存路径，如果为None则使用加载时的路径
         """
         if file_path is None:
@@ -58,6 +66,7 @@ class ExperimentConfig:
         file_path = Path(file_path)
         file_path.parent.mkdir(parents=True, exist_ok=True)
         
+        # Choose saving method based on file extension
         # 根据文件扩展名选择保存方式
         if file_path.suffix.lower() in ['.yml', '.yaml']:
             with open(file_path, 'w', encoding='utf-8') as f:
@@ -69,19 +78,23 @@ class ExperimentConfig:
             raise ValueError("Unsupported config file format. Use .yaml, .yml, or .json")
     
     def get(self, key: str, default: Any = None) -> Any:
-        """获取配置值"""
+        """Get configuration value
+        获取配置值"""
         return self._config.get(key, default)
     
     def set(self, key: str, value: Any) -> None:
-        """设置配置值"""
+        """Set configuration value
+        设置配置值"""
         self._config[key] = value
     
     def update(self, config_dict: Dict) -> None:
-        """更新配置"""
+        """Update configuration
+        更新配置"""
         self._config.update(config_dict)
     
     def copy(self) -> 'ExperimentConfig':
-        """创建配置的深拷贝"""
+        """Create a deep copy of the configuration
+        创建配置的深拷贝"""
         new_config = ExperimentConfig()
         new_config._config = deepcopy(self._config)
         new_config._config_file = self._config_file
@@ -89,5 +102,6 @@ class ExperimentConfig:
     
     @property
     def config(self) -> Dict:
-        """获取完整配置字典"""
+        """Get the complete configuration dictionary
+        获取完整配置字典"""
         return deepcopy(self._config)

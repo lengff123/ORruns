@@ -6,10 +6,12 @@ import numpy as np
 
 class PlotManager:
     def __init__(self):
+        # Set default plot theme and colors
         # 设置默认的绘图主题和颜色
         self.theme = 'plotly_dark'
         self.colors = px.colors.qualitative.Set3
         
+        # Add default layout configuration
         # 添加默认的布局配置
         self.default_layout = dict(
             template=self.theme,
@@ -22,7 +24,8 @@ class PlotManager:
                 font_family="Roboto"
             ),
             font=dict(
-                color='rgb(50, 50, 50)'  # 深灰色文字
+                color='rgb(50, 50, 50)'  # Dark gray text
+                # 深灰色文字
             ),
             xaxis=dict(
                 title_font=dict(color='rgb(50, 50, 50)'),
@@ -49,7 +52,9 @@ class PlotManager:
         )
 
     def create_box_plot(self, data: pd.DataFrame, metric: str, title: str = None) -> go.Figure:
-        """创建基本箱型图"""
+        """Create basic box plot
+        创建基本箱型图
+        """
         fig = go.Figure()
         fig.add_trace(go.Box(
             y=data['value'],
@@ -76,7 +81,9 @@ class PlotManager:
         return fig
 
     def create_grouped_box_plot(self, data: pd.DataFrame, value_col: str, group_col: str, metric: str, title: str = None) -> go.Figure:
-        """创建分组箱型图"""
+        """Create grouped box plot
+        创建分组箱型图
+        """
         fig = go.Figure()
         colors = px.colors.qualitative.Set3
         
@@ -110,7 +117,9 @@ class PlotManager:
         return fig
 
     def create_line_plot(self, data: List[Dict], metric: str, title: str = None) -> go.Figure:
-        """创建基本折线图"""
+        """Create basic line plot
+        创建基本折线图
+        """
         fig = go.Figure()
         
         for i, run_data in enumerate(data):
@@ -140,15 +149,21 @@ class PlotManager:
         return fig
 
     def create_grouped_line_plot(self, data: List[Dict], metric: str, title: str = None) -> go.Figure:
-        """创建分组折线图"""
+        """Create grouped line plot
+        创建分组折线图
+        """
         fig = go.Figure()
         
         colors = (
-            px.colors.qualitative.Set3 +   # 12种颜色
-            px.colors.qualitative.Set1 +   # 9种颜色
-            px.colors.qualitative.Pastel1  # 9种颜色
+            px.colors.qualitative.Set3 +   # 12 colors
+            # 12种颜色
+            px.colors.qualitative.Set1 +   # 9 colors
+            # 9种颜色
+            px.colors.qualitative.Pastel1  # 9 colors
+            # 9种颜色
         )
 
+        # Group by parameters
         # 按参数分组
         grouped_data = {}
         for run_data in data:
@@ -158,7 +173,8 @@ class PlotManager:
             grouped_data[param_group].append(run_data)
         
         for i, (param_group, group_data) in enumerate(sorted(grouped_data.items())):
-            color = colors[i % len(colors)]  # 使用取模运算确保不会超出索引范围
+            color = colors[i % len(colors)]  # Use modulo operation to ensure index does not exceed range
+            # 使用取模运算确保不会超出索引范围
             if isinstance(color, str) and color.startswith('rgb'):
                 fill_color = color.replace('rgb', 'rgba').replace(')', ',0.2)')
             else:
@@ -203,7 +219,9 @@ class PlotManager:
         return fig
 
     def create_parallel_coordinates(self, data: pd.DataFrame, params: List[str], metric: str) -> go.Figure:
-        """创建平行坐标图"""
+        """Create parallel coordinates plot
+        创建平行坐标图
+        """
         fig = px.parallel_coordinates(
             data,
             dimensions=params + [metric],
@@ -222,7 +240,9 @@ class PlotManager:
         return fig
 
     def create_scatter_matrix(self, data: pd.DataFrame, params: List[str], metric: str) -> go.Figure:
-        """创建散点矩阵图"""
+        """Create scatter matrix plot
+        创建散点矩阵图
+        """
         dimensions = params + [metric]
         fig = px.scatter_matrix(
             data,

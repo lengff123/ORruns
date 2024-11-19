@@ -13,31 +13,31 @@ from orruns.core.config import Config
 
 @pytest.fixture
 def runner():
-    """创建CLI测试运行器"""
+    """Create CLI test runner"""
     return CliRunner()
 
 @pytest.fixture
 def temp_dir():
-    """创建临时目录"""
+    """Create temporary directory"""
     temp_dir = tempfile.mkdtemp()
     yield temp_dir
     shutil.rmtree(temp_dir)
 
 @pytest.fixture
 def config(temp_dir):
-    """设置测试配置"""
+    """Set up test configuration"""
     config = Config.get_instance()
-    old_dir = config.get_data_dir()  # 保存原始目录
+    old_dir = config.get_data_dir()  # Save original directory
     config.set_data_dir(temp_dir)
     yield config
-    config.set_data_dir(old_dir)  # 恢复原始目录
+    config.set_data_dir(old_dir)  # Restore original directory
 
 @pytest.fixture
 def sample_experiment(temp_dir):
-    """创建示例实验数据"""
+    """Create sample experiment data"""
     tracker = ExperimentTracker("test_exp", base_dir=temp_dir)
     
-    # 记录参数和指标
+    # Record parameters and metrics
     params = {
         "param1": 1,
         "param2": "test"
@@ -47,43 +47,43 @@ def sample_experiment(temp_dir):
         "metric2": 100
     }
     
-    # 使用 tracker 的方法记录参数和指标
+    # Use tracker methods to record parameters and metrics
     tracker.log_params(params)
     tracker.log_metrics(metrics)
     
-    # 等待文件写入完成
+    # Wait for file writing to complete
     time.sleep(0.5)
     
     return tracker
 
 def test_config_commands(runner, temp_dir):
-    """测试配置相关命令"""
-    # 测试设置数据目录
+    """Test configuration related commands"""
+    # Test setting data directory
     result = runner.invoke(cli, ['config', 'data-dir', temp_dir])
     assert result.exit_code == 0
-    assert f"数据目录已设置为: {temp_dir}" in result.output
+    assert f"Data directory set to: {temp_dir}" in result.output
     
-    # 测试显示配置
+    # Test showing configuration
     result = runner.invoke(cli, ['config', 'show'])
     assert result.exit_code == 0
     assert temp_dir in result.output
-    assert "版本:" in result.output
+    assert "Version:" in result.output
 
 def test_list_command(runner, config, sample_experiment):
-    """测试列出实验命令"""
-    # 等待文件写入完成
+    """Test list experiments command"""
+    # Wait for file writing to complete
     time.sleep(0.1)
     
-    # 测试简略列表
+    # Test brief list
     result = runner.invoke(cli, ['list'])
     assert result.exit_code == 0
     assert "test_exp" in result.output
     
-    # 测试详细列表
+    # Test detailed list
     result = runner.invoke(cli, ['list', '--detailed'])
     assert result.exit_code == 0
     assert "test_exp" in result.output
-    # 检查参数是否在输出中，使用更灵活的检查方式
+    # Check if parameters are in output, using more flexible checks
     output = result.output.replace(" ", "")
     assert any(x in output for x in [
         "'param1':1",
@@ -92,28 +92,27 @@ def test_list_command(runner, config, sample_experiment):
         "{'param1':1"
     ])
     
-    # 测试模式匹配
+    # Test pattern matching
     result = runner.invoke(cli, ['list', '--pattern', 'test_*'])
     assert result.exit_code == 0
     assert "test_exp" in result.output
     
-    # 测试不存在的模式
+    # Test non-existent pattern
     result = runner.invoke(cli, ['list', '--pattern', 'nonexistent_*'])
     assert result.exit_code == 0
-    assert "没有找到匹配模式 'nonexistent_*' 的实验" in result.output
+    assert "No experiments found matching pattern 'nonexistent_*'" in result.output
 
 def test_info_command(runner, config, sample_experiment):
-    """测试查看实验信息命令"""
-    # 等待文件写入完成
+    """Test view experiment info command"""
     time.sleep(0.1)
     
-    # 测试查看实验概览
+    # Test viewing experiment overview
     result = runner.invoke(cli, ['info', 'test_exp'])
     assert result.exit_code == 0
     assert "test_exp" in result.output
-    assert "总运行次数" in result.output
+    assert "Total Runs" in result.output
     
-    # 检查参数和指标，使用更灵活的检查方式
+    # Check parameters and metrics, using more flexible checks
     output = result.output.replace(" ", "")
     assert any(x in output for x in [
         "'param1':1",
@@ -122,7 +121,7 @@ def test_info_command(runner, config, sample_experiment):
         "{'param1':1"
     ])
     
-    # 测试查看特定运行
+    # Test viewing specific run
     result = runner.invoke(cli, ['info', 'test_exp', '--run-id', sample_experiment.run_id])
     assert result.exit_code == 0
     assert sample_experiment.run_id in result.output
@@ -130,60 +129,60 @@ def test_info_command(runner, config, sample_experiment):
     assert "param1:1" in output
 
 def test_delete_command(runner, config, sample_experiment):
-    """测试删除命令"""
-    # 等待文件写入完成
+    """Test delete command"""
+    # Wait for file writing to complete
     time.sleep(0.1)
     
-    # 测试删除确认
+    # Test delete confirmation
     result = runner.invoke(cli, ['delete', 'test_exp'], input='n\n')
     assert result.exit_code == 0
-    assert "操作已取消" in result.output
+    assert "Operation cancelled" in result.output
     
-    # 测试强制删除
+    # Test force delete
     result = runner.invoke(cli, ['delete', 'test_exp', '--force'])
     assert result.exit_code == 0
-    assert "已删除实验" in result.output
+    assert "Deleted experiment" in result.output
     
-    # 验证实验已被删除
+    # Verify experiment was deleted
     result = runner.invoke(cli, ['list'])
     assert "test_exp" not in result.output
     
-    # 测试删除不存在的实验
+    # Test deleting non-existent experiment
     result = runner.invoke(cli, ['delete', 'nonexistent', '--force'])
     assert result.exit_code != 0
     assert "not found" in result.output.lower()
 
 def test_error_handling(runner):
-    """测试错误处理"""
+    """Test error handling"""
     config = Config.get_instance()
-    old_dir = config.get_data_dir()  # 保存原始目录
+    old_dir = config.get_data_dir()  # Save original directory
     
     try:
-        # 使用不存在的目录
+        # Use non-existent directory
         nonexistent_dir = str(Path(tempfile.mkdtemp()) / "nonexistent")
-        shutil.rmtree(nonexistent_dir, ignore_errors=True)  # 确保目录不存在
+        shutil.rmtree(nonexistent_dir, ignore_errors=True)  # Ensure directory doesn't exist
         config.set_data_dir(nonexistent_dir)
         
         result = runner.invoke(cli, ['list'])
-        assert "没有找到任何实验" in result.output
+        assert "No experiments found" in result.output
         
     finally:
-        # 恢复原始目录
+        # Restore original directory
         config.set_data_dir(old_dir)
 
 def test_format_helpers(runner, config, sample_experiment):
-    """测试格式化辅助函数"""
-    # 等待文件写入完成
+    """Test formatting helper functions"""
+    # Wait for file writing to complete
     time.sleep(0.1)
     
     result = runner.invoke(cli, ['info', 'test_exp'])
     assert result.exit_code == 0
     
-    # 验证时间格式化
-    assert "20" in result.output  # 年份
-    assert ":" in result.output   # 时间分隔符
+    # Verify time formatting
+    assert "20" in result.output  # Year
+    assert ":" in result.output   # Time separator
     
-    # 验证指标格式化，使用更灵活的检查方式
+    # Verify metric formatting, using more flexible checks
     output = result.output.replace(" ", "")
     assert any(x in output for x in ["metric1:0.5", "metric1=0.5"])
     assert any(x in output for x in ["metric2:100", "metric2=100"])

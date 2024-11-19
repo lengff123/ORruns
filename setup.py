@@ -5,13 +5,16 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="orruns",
-    version="0.1.1",
-    author="ffxdd",
-    author_email="your.email@example.com",
-    description="Experiment Management Tool for Operations Research and Optimization",
+    version="0.1.2",
+    description="Next-generation Experiment Management Platform for Operations Research",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/orruns",
+    url="https://github.com/lengff123/ORruns",
+    project_urls={
+        "Bug Tracker": "https://github.com/lengff123/ORruns/issues",
+        "Documentation": "https://orruns.readthedocs.io",
+        "Source Code": "https://github.com/lengff123/ORruns",
+    },
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -41,6 +44,7 @@ setup(
         "dash",
         "dash-bootstrap-components",
         "plotly",
+        "flask"
     ],
     extras_require={
         'dev': [
@@ -82,12 +86,6 @@ setup(
         "experiment management",
         "reproducible research",
     ],
-    project_urls={
-        "Documentation": "https://orruns.readthedocs.io/",
-        "Bug Reports": "https://github.com/yourusername/orruns/issues",
-        "Source Code": "https://github.com/yourusername/orruns",
-        "Changelog": "https://github.com/yourusername/orruns/blob/main/CHANGELOG.md",
-    },
     platforms=["any"],
     zip_safe=False,
     license="GNU Affero General Public License v3",

@@ -1,6 +1,6 @@
 from orruns import ExperimentConfig, repeat_experiment
 
-# 创建配置文件 config.yaml
+# Create configuration file config.yaml
 """
 algorithm:
   name: "VNS"
@@ -18,21 +18,21 @@ experiment:
   seed: 42
 """
 
-# 加载配置
+# Load configuration
 config = ExperimentConfig("config.yaml")
 
-# 使用配置运行实验
+# Run experiment with configuration
 @repeat_experiment(
     times=config.get("experiment.runs", 1),
     parallel=config.get("experiment.parallel", False)
 )
 def run_optimization(tracker):
-    # 记录实验配置
+    # Record experiment configuration
     tracker.log_params(config.config)
     
-    # 获取算法参数
+    # Get algorithm parameters
     algo_params = config.get("algorithm.parameters", {})
     max_iter = algo_params.get("max_iterations", 100)
     
-    # 实验代码...
+    # Experiment code...
     pass

@@ -13,16 +13,16 @@ from orruns.tracker import ExperimentTracker
 
 @pytest.fixture
 def temp_dir():
-    """创建临时目录"""
+    """Create temporary directory"""
     temp_dir = tempfile.mkdtemp()
     yield temp_dir
     shutil.rmtree(temp_dir)
 
 def test_nested_parameters(temp_dir):
-    """测试嵌套参数记录"""
+    """Test nested parameter recording"""
     tracker = ExperimentTracker("nested_test", base_dir=temp_dir)
     
-    # 复杂的嵌套参数
+    # Complex nested parameters
     params = {
         "optimizer": {
             "name": "adam",
@@ -50,26 +50,26 @@ def test_nested_parameters(temp_dir):
         }
     }
     
-    # 记录参数
+    # Record parameters
     tracker.log_params(params)
     
-    # 验证参数是否正确保存
+    # Verify parameters are saved correctly
     saved_params = tracker.get_params()
     assert saved_params["optimizer"]["settings"]["learning_rate"] == 0.001
     assert saved_params["network"]["architecture"]["dropout"]["rate"] == 0.5
     
-    # 使用前缀更新参数
+    # Update parameters using prefix
     tracker.log_params({"rate": 0.3}, prefix="network.architecture.dropout")
     saved_params = tracker.get_params()
     assert saved_params["network"]["architecture"]["dropout"]["rate"] == 0.3
 
 def test_complex_metrics(temp_dir):
-    """测试复杂指标记录"""
+    """Test complex metric recording"""
     tracker = ExperimentTracker("metrics_test", base_dir=temp_dir)
     
-    # 模拟训练过程中的指标记录
+    # Simulate metric recording during training
     for epoch in range(5):
-        # 每个epoch的训练指标
+        # Training metrics for each epoch
         train_metrics = {
             "loss": {
                 "total": 2.5 - epoch * 0.5,
@@ -85,7 +85,7 @@ def test_complex_metrics(temp_dir):
             "learning_rate": 0.001 * (0.9 ** epoch)
         }
         
-        # 每个epoch的验证指标
+        # Validation metrics for each epoch
         val_metrics = {
             "loss": {
                 "total": 2.3 - epoch * 0.4,
@@ -100,23 +100,23 @@ def test_complex_metrics(temp_dir):
             }
         }
         
-        # 记录指标
+        # Record metrics
         tracker.log_metrics(train_metrics, prefix="train", step=epoch)
         tracker.log_metrics(val_metrics, prefix="val", step=epoch)
     
-    # 验证指标是否正确保存
+    # Verify metrics are saved correctly
     saved_metrics = tracker.get_metrics()
     assert len(saved_metrics["train"]["loss"]["total"]["steps"]) == 5
     assert len(saved_metrics["val"]["accuracy"]["top1"]["values"]) == 5
 
 def test_artifacts_with_complex_data(temp_dir):
-    """测试复杂数据工件的保存和加载"""
+    """Test saving and loading complex data artifacts"""
     tracker = ExperimentTracker("artifacts_test", base_dir=temp_dir)
     
-    # 创建复杂的图表
+    # Create complex plots
     fig, axes = plt.subplots(2, 2, figsize=(12, 8))
     
-    # 生成示例数据
+    # Generate sample data
     x = np.linspace(0, 10, 100)
     for i, ax in enumerate(axes.flat):
         y = np.sin(x + i) * np.exp(-0.1 * x)
@@ -127,7 +127,7 @@ def test_artifacts_with_complex_data(temp_dir):
     plt.tight_layout()
     tracker.log_artifact("complex_figure.png", fig, "figure")
     
-    # 创建多层次的DataFrame
+    # Create multi-level DataFrame
     df = pd.DataFrame({
         'A': np.random.randn(100),
         'B': np.random.randn(100),
@@ -138,7 +138,7 @@ def test_artifacts_with_complex_data(temp_dir):
     
     tracker.log_artifact("complex_data.csv", df, "data")
     
-    # 创建复杂的JSON数据
+    # Create complex JSON data
     complex_json = {
         "experiment_info": {
             "timestamp": datetime.now().isoformat(),
@@ -180,12 +180,12 @@ def test_artifacts_with_complex_data(temp_dir):
     
     tracker.log_artifact("complex_results.json", complex_json, "json")
     
-    # 验证工件是否正确保存和加载
+    # Verify artifacts are saved and loaded correctly
     artifacts = tracker.get_current_artifacts()
     assert "complex_figure.png" in artifacts["figures"]
     assert "complex_data.csv" in artifacts["data"]
     
-    # 加载并验证数据
+    # Load and verify data
     loaded_df = ExperimentTracker.load_artifact(
         tracker.experiment_name,
         tracker.run_id,
@@ -197,14 +197,14 @@ def test_artifacts_with_complex_data(temp_dir):
     assert loaded_df.shape == (100, 5)
 
 def test_experiment_query(temp_dir):
-    """测试复杂的实验查询"""
-    # 创建多个实验记录
+    """Test complex experiment queries"""
+    # Create multiple experiment records
     experiments = []
     for i in range(3):
         for j in range(2):
             tracker = ExperimentTracker(f"exp_{i}", base_dir=temp_dir)
             
-            # 记录复杂参数
+            # Record complex parameters
             params = {
                 "model": {
                     "type": "cnn" if i % 2 == 0 else "rnn",
@@ -218,7 +218,7 @@ def test_experiment_query(temp_dir):
             }
             tracker.log_params(params)
             
-            # 记录复杂指标
+            # Record complex metrics
             metrics = {
                 "performance": {
                     "accuracy": 0.8 + i * 0.05 + j * 0.02,
@@ -232,9 +232,9 @@ def test_experiment_query(temp_dir):
             tracker.log_metrics(metrics)
             experiments.append(tracker)
             
-            time.sleep(0.1)  # 确保时间戳不同
+            time.sleep(0.1)  # Ensure different timestamps
     
-    # 测试复杂查询
+    # Test complex queries
     results = ExperimentTracker.query_experiments(
         base_dir=temp_dir,
         parameter_filters={

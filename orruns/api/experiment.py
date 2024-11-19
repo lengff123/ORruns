@@ -11,21 +11,27 @@ class ExperimentAPI:
             self.config.set_data_dir(data_dir)
     
     def list_experiments(self, last: int = 10, pattern: Optional[str] = None) -> List[Dict]:
-        """列出实验"""
+        """List experiments
+        列出实验
+        """
         experiments = ExperimentTracker.list_experiments(base_dir=self.config.get_data_dir())
         if pattern:
             experiments = [exp for exp in experiments if fnmatch.fnmatch(exp['name'], pattern)]
         return experiments[:last]
     
     def get_experiment(self, experiment_name: str) -> Dict:
-        """获取实验详情"""
+        """Get experiment details
+        获取实验详情
+        """
         return ExperimentTracker.get_experiment(
             experiment_name=experiment_name,
             base_dir=self.config.get_data_dir()
         )
     
     def get_run(self, experiment_name: str, run_id: str) -> Dict:
-        """获取特定运行的详情"""
+        """Get details of a specific run
+        获取特定运行的详情
+        """
         return ExperimentTracker.get_run(
             experiment_name=experiment_name,
             run_id=run_id,
@@ -33,7 +39,10 @@ class ExperimentAPI:
         )
     
     def query_experiments(self, **filters) -> List[Dict]:
-        """查询实验"""
+        """Query experiments
+        查询实验
+        """
+        # Validate filter format
         # 验证过滤器格式
         parameter_filters = filters.get('parameter_filters', {})
         for key in parameter_filters:
@@ -49,7 +58,9 @@ class ExperimentAPI:
         )
     
     def get_artifacts(self, experiment_name: str, run_id: str) -> Dict[str, List[str]]:
-        """获取实验运行的所有文件工件"""
+        """Get all file artifacts of an experiment run
+        获取实验运行的所有文件工件
+        """
         return ExperimentTracker.list_artifacts(
             experiment_name,
             run_id,
@@ -61,7 +72,9 @@ class ExperimentAPI:
                          run_id: str,
                          artifact_path: str,
                          artifact_type: Optional[str] = None) -> Path:
-        """获取特定文件工件的路径"""
+        """Get the path of a specific file artifact
+        获取特定文件工件的路径
+        """
         return ExperimentTracker.get_artifact(
             experiment_name=experiment_name,
             run_id=run_id,
@@ -75,7 +88,9 @@ class ExperimentAPI:
                      run_id: str,
                      artifact_path: str,
                      artifact_type: Optional[str] = None) -> Any:
-        """加载文件工件的内容"""
+        """Load the content of a file artifact
+        加载文件工件的内容
+        """
         return ExperimentTracker.load_artifact(
             experiment_name=experiment_name,
             run_id=run_id,
@@ -83,4 +98,3 @@ class ExperimentAPI:
             artifact_type=artifact_type,
             base_dir=self.config.get_data_dir()
         )
-    

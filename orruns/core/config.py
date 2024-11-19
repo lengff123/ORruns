@@ -19,14 +19,18 @@ class Config:
         return cls._instance
     
     def _load_config(self) -> None:
-        """加载配置文件"""
+        """Load configuration file
+        加载配置文件
+        """
         if self.config_path.exists():
             with open(self.config_path, 'r', encoding='utf-8') as f:
                 config = json.load(f)
                 self.data_dir = config.get('data_dir')
     
     def _save_config(self) -> None:
-        """保存配置文件"""
+        """Save configuration file
+        保存配置文件
+        """
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.config_path, 'w', encoding='utf-8') as f:
             json.dump({
@@ -34,7 +38,9 @@ class Config:
             }, f, indent=2, ensure_ascii=False)
     
     def set_data_dir(self, path: Optional[Union[str, Path]]) -> None:
-        """设置数据目录"""
+        """Set data directory
+        设置数据目录
+        """
         if path is None:
             self.data_dir = None
         else:
@@ -42,5 +48,7 @@ class Config:
         self._save_config()
     
     def get_data_dir(self) -> Optional[str]:
-        """获取数据目录"""
+        """Get data directory
+        获取数据目录
+        """
         return self.data_dir

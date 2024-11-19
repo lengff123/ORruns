@@ -6,7 +6,7 @@ import json
 import pandas as pd
 from typing import Dict, List, Any
 from .plots import PlotManager
-import plotly.graph_objs as go  # 添加这行
+import plotly.graph_objs as go  # Add this line / 添加这行
 import flask
 class ExperimentDashboard:
     def __init__(self, base_dir="./orruns_experiments"):
@@ -23,24 +23,24 @@ class ExperimentDashboard:
         @self.app.server.route('/artifacts/<path:path>')
         def serve_artifacts(path):
             try:
-                # 分解路径
+                # Decompose the path / 分解路径
                 parts = path.split('/')
                 if len(parts) >= 3:  # experiment/run_id/figures|data/filename
                     exp_name = parts[0]
                     run_id = parts[1]
                     file_type = parts[2]  # 'figures' or 'data'
                     
-                    # 构建完整路径
+                    # Construct the full path / 构建完整路径
                     file_path = '/'.join(parts[3:]) if len(parts) > 3 else ''
                     full_path = self.base_dir / exp_name / run_id / 'artifacts' / file_type / file_path
                     
-                    print(f"Attempting to serve file: {full_path}")  # 调试日志
+                    print(f"Attempting to serve file: {full_path}")  # Debug log / 调试日志
                     
                     if not full_path.exists():
                         print(f"File not found: {full_path}")
                         return flask.abort(404)
                     
-                    # 添加 MIME 类型检测
+                    # Add MIME type detection / 添加 MIME 类型检测
                     mimetype = None
                     if full_path.suffix.lower() in ['.png', '.jpg', '.jpeg']:
                         mimetype = f'image/{full_path.suffix[1:].lower()}'
@@ -63,7 +63,7 @@ class ExperimentDashboard:
         
     def setup_layout(self):
         self.app.layout = dbc.Container([
-            # 导航栏
+            # Navbar / 导航栏
             dbc.Navbar([
                 dbc.Container([
                     html.A(
@@ -82,9 +82,9 @@ class ExperimentDashboard:
                 ])
             ], color="dark", dark=True, className="mb-4"),
 
-            # 主内容区
+            # Main content area / 主内容区
             dbc.Row([
-                # 左侧边栏
+                # Left sidebar / 左侧边栏
                 dbc.Col([
                     dbc.Card([
                         dbc.CardBody([
@@ -101,9 +101,9 @@ class ExperimentDashboard:
                     ])
                 ], width=3),
 
-                # 主要内容区
+                # Main content area / 主要内容区
                 dbc.Col([
-                    # 概览卡片
+                    # Overview cards / 概览卡片
                     dbc.Row([
                         dbc.Col(dbc.Card([
                             dbc.CardBody([
@@ -125,7 +125,7 @@ class ExperimentDashboard:
                         ]), width=4),
                     ], className="mb-4"),
 
-                    # 图表区域
+                    # Chart area / 图表区域
                     dbc.Card([
                         dbc.CardBody([
                             dbc.Row([
@@ -135,7 +135,7 @@ class ExperimentDashboard:
                         ])
                     ], className="mb-4"),
 
-                    # 详细信息标签页
+                    # Detailed information tabs / 详细信息标签页
                     dbc.Tabs([
                         dbc.Tab([
                             html.Div(id='statistics-table')
@@ -192,7 +192,7 @@ class ExperimentDashboard:
             if not experiment:
                 return []
             
-            # 收集所有参数及其唯一值
+            # Collect all parameters and their unique values / 收集所有参数及其唯一值
             param_values = {}
             exp_dir = self.base_dir / experiment
             for run_dir in exp_dir.iterdir():
@@ -206,9 +206,9 @@ class ExperimentDashboard:
                                     param_values[k] = set()
                                 param_values[k].add(str(v))
             
-            # 创建参数选择器和过滤器容器
+            # Create parameter selector and filter container / 创建参数选择器和过滤器容器
             return [
-                # 参数选择下拉框
+                # Parameter selection dropdown / 参数选择下拉框
                 dbc.Card([
                     dbc.CardBody([
                         html.H5("Select Parameters"),
@@ -219,7 +219,7 @@ class ExperimentDashboard:
                             multi=True,
                             className="mb-3"
                         ),
-                        # 参数过滤器容器
+                        # Parameter filter container / 参数过滤器容器
                         html.Div(id='param-filters-container', className="mt-3")
                     ])
                 ], className="mb-3")
@@ -234,7 +234,7 @@ class ExperimentDashboard:
             if not experiment or not selected_params:
                 return []
             
-            # 只为选中的参数创建过滤器
+            # Create filters only for selected parameters / 只为选中的参数创建过滤器
             param_values = {}
             exp_dir = self.base_dir / experiment
             for run_dir in exp_dir.iterdir():
@@ -249,7 +249,7 @@ class ExperimentDashboard:
                                         param_values[k] = set()
                                     param_values[k].add(str(v))
             
-            # 为选中的参数创建过滤器
+            # Create filters for selected parameters / 为选中的参数创建过滤器
             return [
                 html.Div([
                     html.Label(param),
@@ -282,15 +282,15 @@ class ExperimentDashboard:
             if not ctx.triggered:
                 return {}, {}, [], "N/A", "N/A", "N/A"
             
-            # 获取参数过滤条件
+            # Get parameter filter conditions / 获取参数过滤条件
             param_filter_dict = {}
             if param_filters:
                 for i, param_values in enumerate(param_filters):
-                    if param_values:  # 如果有选中的值
+                    if param_values:  # If there are selected values / 如果有选中的值
                         param_name = ctx.inputs_list[3][i]['id']['param']
                         param_filter_dict[param_name] = param_values
 
-            # 收集数据
+            # Collect data / 收集数据
             box_data = []
             convergence_data = []
             exp_dir = self.base_dir / experiment
@@ -300,14 +300,14 @@ class ExperimentDashboard:
                 if not run_dir.is_dir():
                     continue
                 
-                # 读取参数文件
+                # Read parameter file / 读取参数文件
                 params = {}
                 params_file = run_dir / 'params' / 'params.json'
                 if params_file.exists():
                     with open(params_file, 'r') as f:
                         params = json.load(f)
                         
-                    # 检查是否满足过滤条件
+                    # Check if it meets the filter conditions / 检查是否满足过滤条件
                     if param_filter_dict:
                         match = True
                         for param_name, filter_values in param_filter_dict.items():
@@ -317,14 +317,14 @@ class ExperimentDashboard:
                         if not match:
                             continue
                 
-                # 构建参数信息字符串
+                # Construct parameter information string / 构建参数信息字符串
                 if params and selected_params:
                     param_info = '_'.join(f"{k}={v}" for k, v in params.items() 
                                         if k in selected_params)
                 else:
                     param_info = "no_params"
                     
-                # 读取指标数据
+                # Read metric data / 读取指标数据
                 metrics_file = run_dir / 'metrics' / 'metrics.json'
                 if metrics_file.exists():
                     with open(metrics_file, 'r') as f:
@@ -351,10 +351,10 @@ class ExperimentDashboard:
                                     'value': metric_data
                                 })
 
-            # 创建图表
+            # Create charts / 创建图表
             box_df = pd.DataFrame(box_data)
             if not box_df.empty:
-                if len(box_df['params'].unique()) > 1:  # 如果有多个参数组
+                if len(box_df['params'].unique()) > 1:  # If there are multiple parameter groups / 如果有多个参数组
                     box_fig = self.plot_manager.create_grouped_box_plot(
                         box_df, 
                         'value',
@@ -368,7 +368,7 @@ class ExperimentDashboard:
                         metric,
                         f'{metric} Convergence Curves by Parameters'
                     )
-                else:  # 单个参数组或无参数
+                else:  # Single parameter group or no parameters / 单个参数组或无参数
                     box_fig = self.plot_manager.create_box_plot(
                         box_df, 
                         metric, 
@@ -381,11 +381,11 @@ class ExperimentDashboard:
                         f'{metric} Convergence Curves'
                     )
             else:
-                # 创建空图表
+                # Create empty charts / 创建空图表
                 box_fig = go.Figure()
                 conv_fig = go.Figure()
 
-            # 计算统计信息
+            # Calculate statistics / 计算统计信息
             if not box_df.empty:
                 stats = box_df['value'].describe()
                 stats_table = dbc.Table([
@@ -417,7 +417,7 @@ class ExperimentDashboard:
             if not experiment:
                 return []
             
-            # 收集所有运行的参数
+            # Collect parameters of all runs / 收集所有运行的参数
             params_data = []
             exp_dir = self.base_dir / experiment
             for run_dir in exp_dir.iterdir():
@@ -426,19 +426,19 @@ class ExperimentDashboard:
                     if params_file.exists():
                         with open(params_file, 'r') as f:
                             params = json.load(f)
-                            params['run_id'] = run_dir.name[-8:]  # 添加运行ID
+                            params['run_id'] = run_dir.name[-8:]  # Add run ID / 添加运行ID
                             params_data.append(params)
             
             if not params_data:
                 return html.P("No parameters found")
             
-            # 获取所有参数名
+            # Get all parameter names / 获取所有参数名
             param_names = set()
             for params in params_data:
                 param_names.update(params.keys())
-            param_names.discard('run_id')  # 移除run_id
+            param_names.discard('run_id')  # Remove run_id / 移除run_id
             
-            # 创建表格
+            # Create table / 创建表格
             return dbc.Table([
                 html.Thead([
                     html.Tr([html.Th("Run")] + [html.Th(name) for name in sorted(param_names)])
@@ -469,25 +469,25 @@ class ExperimentDashboard:
                     run_artifacts = []
                     artifacts_dir = run_dir / "artifacts"
                     
-                    # 处理figures目录
+                    # Process figures directory / 处理figures目录
                     figures_dir = artifacts_dir / "figures"
                     if figures_dir.exists():
                         figure_items = []
                         for figure in figures_dir.glob("*"):
                             if figure.is_file():
-                                # 修改为:
+                                # Modify to: / 修改为:
                                 relative_path = f"{experiment}/{run_dir.name}/figures/{figure.name}"
                                 figure_items.append(
                                     dbc.ListGroupItem([
                                         html.Div([
                                             html.Img(
-                                                src=f"/{relative_path}",  # 移除了 artifacts
+                                                src=f"/{relative_path}",  # Removed artifacts / 移除了 artifacts
                                                 style={'max-width': '100%', 'height': 'auto', 'margin': '10px 0'}
                                             ),
                                             html.Div(
                                                 html.A(
                                                     figure.name,
-                                                    href=f"/{relative_path}",  # 移除了 artifacts
+                                                    href=f"/{relative_path}",  # Removed artifacts / 移除了 artifacts
                                                     target="_blank",
                                                     style={'margin-top': '5px'}
                                                 )
@@ -503,7 +503,7 @@ class ExperimentDashboard:
                                 ], className="mb-3")
                             )
                     
-                    # 处理data目录
+                    # Process data directory / 处理data目录
                     data_dir = artifacts_dir / "data"
                     if data_dir.exists():
                         data_items = []

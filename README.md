@@ -31,10 +31,24 @@ Have you encountered these challenges in Operations Research?
 ## ✨ Features
 
 ### Elegant Experiment Tracking
-```python
-from orruns import ExperimentTracker
 
-with ExperimentTracker("nsga2_optimization") as tracker:
+#### Simple Single-Run Experiment 
+```python
+@repeat_experiment(times=1)
+def optimize_with_different_seeds(tracker):
+    tracker.log_params({
+        "epoches": 1000
+    })
+    # Your optimization code
+    result = optimize()
+    # Automatic parallelization, result collection and visualization
+    return your_optimization_algorithm()
+```
+
+#### Powerful Parallel Experiment Support
+```python
+@repeat_experiment(times=10, parallel=True)
+def optimize_with_different_seeds(tracker):
     tracker.log_params({
         "population_size": 100,
         "generations": 1000
@@ -47,12 +61,8 @@ with ExperimentTracker("nsga2_optimization") as tracker:
         "pareto_front_size": len(result.pareto_front),
         "hypervolume": result.hypervolume
     })
-```
-
-### Powerful Parallel Experiment Support
-```python
-@repeat_experiment(times=5, parallel=True)
-def optimize_with_different_seeds(tracker):
+    # save the Pareto front Visualization
+    tracker.log_artifact("pareto_front.png", plt.gcf())
     # Automatic parallelization, result collection and visualization
     return your_optimization_algorithm()
 ```
@@ -131,13 +141,20 @@ We're planning exciting features to build a more comprehensive Operations Resear
 ORruns is licensed under the GNU General Public License v3.0 (GPL-3.0) with additional non-commercial terms. This means: if you need to use this software for commercial purposes, please contact the project maintainers for a commercial license.
 See the full license text in the [LICENSE](LICENSE) file.
 
+
+## ☕ Support the Project
+---
+<a href="https://www.buymeacoffee.com/your_username" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+
 ## 🌟 Join the Community
 
 - 💬 [Join Discussions](https://github.com/lengff123/ORruns/discussions)
 - 🐛 [Report Issues](https://github.com/lengff123/ORruns/issues)
 - 📫 [Mailing List](mailto:your-email@example.com)
 
----
+
+
 
 <p align="center">
   <em>By Operations Researchers, For Operations Researchers</em>
@@ -145,3 +162,4 @@ See the full license text in the [LICENSE](LICENSE) file.
   <br>
   If you like this project, please give us a ⭐️
 </p>
+

@@ -13,24 +13,24 @@ from orruns.core.config import Config
 
 @pytest.fixture
 def temp_dir():
-    """创建临时目录"""
+    """Create temporary directory"""
     temp_dir = tempfile.mkdtemp()
     yield temp_dir
     shutil.rmtree(temp_dir)
 
 @pytest.fixture
 def api(temp_dir):
-    """创建API实例"""
+    """Create API instance"""
     config = Config.get_instance()
     config.set_data_dir(temp_dir)
     return ExperimentAPI()
 
 @pytest.fixture
 def sample_experiment(api):
-    """创建示例实验"""
+    """Create sample experiment"""
     tracker = ExperimentTracker("test_exp", base_dir=api.config.get_data_dir())
     
-    # 记录参数
+    # Record parameters
     tracker.log_params({
         "learning_rate": 0.01,
         "batch_size": 32,
@@ -40,7 +40,7 @@ def sample_experiment(api):
         }
     })
     
-    # 记录指标
+    # Record metrics
     tracker.log_metrics({
         "accuracy": 0.85,
         "loss": 0.15,
@@ -50,47 +50,47 @@ def sample_experiment(api):
         }
     })
     
-    # 记录CSV文件
+    # Record CSV file
     csv_content = "col1,col2\n1,2\n3,4"
     tracker.log_artifact("data.csv", csv_content, artifact_type="data")
     
-    # 记录图像文件
+    # Record image file
     tracker.log_artifact("plot.png", b"fake_image_data", artifact_type="figure")
     
-    # 等待文件写入完成
+    # Wait for file writing to complete
     time.sleep(0.1)
     
     return tracker
 
 def test_list_experiments(api, sample_experiment):
-    """测试列出实验"""
-    # 等待文件写入完成
+    """Test listing experiments"""
+    # Wait for file writing to complete
     time.sleep(0.1)
     
     experiments = api.list_experiments()
     assert len(experiments) > 0
     
-    # 验证实验信息
+    # Verify experiment information
     exp = next(e for e in experiments if e["name"] == "test_exp")
     assert len(exp["runs"]) == 1
     assert "params" in exp["runs"][0]
     assert "metrics" in exp["runs"][0]
 
 def test_list_experiments_with_pattern(api, sample_experiment):
-    """测试使用模式匹配列出实验"""
-    # 创建额外的实验
+    """Test listing experiments with pattern matching"""
+    # Create additional experiments
     tracker2 = ExperimentTracker("test_exp_2", base_dir=api.config.get_data_dir())
     tracker2.log_params({"test": True})
-    tracker2._save_experiment_info()  # 确保保存
+    tracker2._save_experiment_info()  # Ensure saving
     
     tracker3 = ExperimentTracker("other_exp", base_dir=api.config.get_data_dir())
     tracker3.log_params({"test": True})
-    tracker3._save_experiment_info()  # 确保保存
+    tracker3._save_experiment_info()  # Ensure saving
     
-    # 增加等待时间
-    time.sleep(0.2)  # 增加等待时间
+    # Increase wait time
+    time.sleep(0.2)  # Increase wait time
     
-    # 使用模式匹配
+    # Use pattern matching
     experiments = api.list_experiments(pattern="test_*")
     names = [exp["name"] for exp in experiments]
     assert "test_exp" in names
@@ -98,90 +98,90 @@ def test_list_experiments_with_pattern(api, sample_experiment):
     assert "other_exp" not in names
 
 def test_get_experiment(api, sample_experiment):
-    """测试获取实验详情"""
-    # 等待文件写入完成
+    """Test getting experiment details"""
+    # Wait for file writing to complete
     time.sleep(0.1)
     
     exp_info = api.get_experiment("test_exp")
     
-    # 验证基本信息
+    # Verify basic information
     assert exp_info["name"] == "test_exp"
     assert len(exp_info["runs"]) == 1
     
-    # 验证参数和指标
+    # Verify parameters and metrics
     latest_run = exp_info["latest_run"]
     assert latest_run["params"]["learning_rate"] == 0.01
     assert latest_run["metrics"]["accuracy"] == 0.85
 
 def test_get_run(api, sample_experiment):
-    """测试获取运行详情"""
-    # 等待文件写入完成
+    """Test getting run details"""
+    # Wait for file writing to complete
     time.sleep(0.1)
     
     run_info = api.get_run("test_exp", sample_experiment.run_id)
     
-    # 验证运行信息
+    # Verify run information
     assert run_info["run"]["run_id"] == sample_experiment.run_id
     assert run_info["parameters"]["learning_rate"] == 0.01
     assert run_info["metrics"]["accuracy"] == 0.85
 
 def test_query_experiments(api, sample_experiment):
-    """测试查询实验"""
-    # 创建一个新的实验并记录明确的测试数据
+    """Test querying experiments"""
+    # Create a new experiment and record explicit test data
     tracker = ExperimentTracker("test_exp_query", base_dir=api.config.get_data_dir())
     
-    # 记录参数并保存
+    # Record parameters and save
     tracker.log_params({
         "learning_rate": 0.01,
         "batch_size": 32
     })
-    tracker._save_experiment_info()  # 确保保存
+    tracker._save_experiment_info()  # Ensure saving
     
-    # 记录指标并保存
+    # Record metrics and save
     tracker.log_metrics({
         "accuracy": 0.85,
         "loss": 0.15
     })
-    tracker._save_experiment_info()  # 再次保存以更新指标
+    tracker._save_experiment_info()  # Save again to update metrics
     
-    # 增加等待时间
+    # Increase wait time
     time.sleep(0.2)
     
-    # 参数过滤
+    # Parameter filtering
     results = api.query_experiments(
         parameter_filters={
-            "learning_rate__eq": 0.01  # 使用 __eq 操作符进行精确匹配
+            "learning_rate__eq": 0.01  # Use __eq operator for exact matching
         }
     )
     assert len(results) > 0
     assert results[0]["parameters"]["learning_rate"] == 0.01
 
-    # 指标过滤
+    # Metric filtering
     results = api.query_experiments(
         metric_filters={
-            "accuracy__gte": 0.8  # 使用与参数过滤器相同的格式
+            "accuracy__gte": 0.8  # Use same format as parameter filters
         }
     )
     assert len(results) > 0
     assert results[0]["metrics"]["accuracy"] >= 0.8
 
 def test_get_artifacts(api, sample_experiment):
-    """测试获取文件工件列表"""
-    # 等待文件写入完成
+    """Test getting artifact list"""
+    # Wait for file writing to complete
     time.sleep(0.1)
     
     artifacts = api.get_artifacts("test_exp", sample_experiment.run_id)
     
-    # 验证文件列表
+    # Verify file list
     assert "data.csv" in artifacts["data"]
     assert "plot.png" in artifacts["figures"]
 
 def test_get_artifact_path(api, sample_experiment):
-    """测试获取文件工件路径"""
-    # 等待文件写入完成
+    """Test getting artifact path"""
+    # Wait for file writing to complete
     time.sleep(0.1)
     
-    # 获取数据文件路径
+    # Get data file path
     data_path = api.get_artifact_path(
         "test_exp",
         sample_experiment.run_id,
@@ -192,7 +192,7 @@ def test_get_artifact_path(api, sample_experiment):
     with open(data_path, 'r', encoding='utf-8') as f:
         assert f.read() == "col1,col2\n1,2\n3,4"
     
-    # 获取图像文件路径
+    # Get image file path
     figure_path = api.get_artifact_path(
         "test_exp",
         sample_experiment.run_id,
@@ -204,32 +204,32 @@ def test_get_artifact_path(api, sample_experiment):
         assert f.read() == b"fake_image_data"
 
 def test_load_artifact(api, sample_experiment):
-    """测试加载文件工件"""
-    # 等待文件写入完成
+    """Test loading artifacts"""
+    # Wait for file writing to complete
     time.sleep(0.1)
     
-    # 加载CSV文件
+    # Load CSV file
     data = api.load_artifact(
         "test_exp",
         sample_experiment.run_id,
         "data.csv",
         artifact_type="data"
     )
-    # 检查是否为 DataFrame
+    # Check if it's a DataFrame
     assert isinstance(data, pd.DataFrame)
     assert list(data.columns) == ["col1", "col2"]
 
 def test_error_handling(api):
-    """测试错误处理"""
-    # 测试不存在的实验
+    """Test error handling"""
+    # Test non-existent experiment
     with pytest.raises(FileNotFoundError):
         api.get_experiment("nonexistent")
 
-    # 测试不存在的运行
+    # Test non-existent run
     with pytest.raises(FileNotFoundError):
         api.get_run("nonexistent", "nonexistent_run")
 
-    # 测试不存在的文件工件
+    # Test non-existent artifact
     with pytest.raises(FileNotFoundError):
         api.get_artifact_path(
             "nonexistent",
@@ -237,7 +237,7 @@ def test_error_handling(api):
             "nonexistent.txt"
         )
 
-    # 测试无效的查询条件
+    # Test invalid query conditions
     with pytest.raises(ValueError):
         api.query_experiments(
             parameter_filters={"learning_rate__invalid": 0.1}
