@@ -1,78 +1,65 @@
-# ORruns: Redefining Operations Research Experiment Management 🚀
+
 
 <p align="center">
   <img src="orruns/assets/logo.png" alt="ORruns Logo" width="200"/>
   <br>
-  <em>Next-generation Experiment Management Platform for Operations Research</em>
+  <em>ORruns:Next-generation Experiment Management Platform for Operations Research</em>
 </p>
 
-> 🌱 ORruns is in its vibrant early stages. As a newly launched open-source project, we welcome every Operations Research researcher to participate and contribute. Your ideas and code will help this project grow better. Let's build the future of the Operations Research community together!
+> 🌱 ORruns is a growing personal project. As a passionate Operations Research developer, I aim to help researchers improve their experiment efficiency. Join me in making OR experiment management easier!
 
 <p align="center">
   <a href="#quick-start">Quick Start</a> •
   <a href="#why-orruns">Why ORruns</a> •
-  <a href="#community">Community</a> •
-  <a href="#features">Features</a>
+  <a href="#features">Features</a> •
+  <a href="#community">Contribute</a>
 </p>
 
 ---
 
 ## Why ORruns?
 
-Have you encountered these challenges in Operations Research?
+During my Operations Research studies, I frequently encountered these challenges:
 
-- 📊 Experimental data scattered everywhere, difficult to manage and track
-- 🔄 Tedious experiment repetition and chaotic parameter management
-- 📈 Repetitive code writing for visualization
-- 🤝 Lack of unified experiment management and sharing platform
+- 📊 Experimental data scattered across different locations
+- 🔄 Tedious experiment repetition and messy parameter management
+- 📈 Repetitive visualization code writing
+- 🤝 Lack of unified experiment management platform
 
-**ORruns** is born to solve these problems! We are committed to providing Operations Research researchers with a modern, intuitive, and powerful experiment management tool.
+**ORruns** was born to solve these problems! I aim to provide OR researchers with a modern, intuitive, and powerful experiment management tool.
 
 ## ✨ Features
 
-### Elegant Experiment Tracking
+### Elegant Experiment Management
 
-#### Simple Single-Run Experiment 
 ```python
-@repeat_experiment(times=1)
-def optimize_with_different_seeds(tracker):
-    tracker.log_params({
-        "epoches": 1000
-    })
-    # Your optimization code
-    result = optimize()
-    # Automatic parallelization, result collection and visualization
-    return your_optimization_algorithm()
-```
-
-#### Powerful Parallel Experiment Support
-```python
-@repeat_experiment(times=10, parallel=True)
-def optimize_with_different_seeds(tracker):
+@experiment_manager(times=10, parallel=True)
+def optimize_problem(tracker):
+    # Configure experiment parameters
     tracker.log_params({
         "population_size": 100,
         "generations": 1000
     })
     
-    # Your optimization code
+    # Run optimization
     result = optimize()
     
+    # Track results automatically
     tracker.log_metrics({
         "pareto_front_size": len(result.pareto_front),
         "hypervolume": result.hypervolume
     })
-    # save the Pareto front Visualization
     tracker.log_artifact("pareto_front.png", plt.gcf())
-    # Automatic parallelization, result collection and visualization
-    return your_optimization_algorithm()
+    
+    return result
 ```
 
-### Intuitive Visualization Interface
+### Intuitive Web Interface
 <p align="center">
   <img src="orruns/assets/web.png" alt="Dashboard Screenshot" width="600"/>
 </p>
 
-## 🚀 Quick Start
+## 🚀 Vision
 
 ```bash
 pip install orruns
@@ -89,40 +76,23 @@ We believe that the Operations Research community deserves modern and open tooli
 - 🌟 Build an open, active Operations Research community
 - 🔧 Create better experiment management tools
 - 📚 Share knowledge and best practices
-- 🤝 Promote academic exchange and collaboration
+- 🤝 Facilitate academic exchange
 
-## 💡 Join the Journey
+## 💡 Get Involved
 
-> "The future of Operations Research needs our collective effort. Let's build an open-source community for Operations Research researchers!"
+> "Good tools make research twice as efficient. Join me in making OR experiment management better!"
 
-### 🌱 Growing Together from Zero
+### 🌱 Growing Together
 
-ORruns is still a young project, which means:
-- You can participate in core feature design and development
-- Your ideas and suggestions are more likely to be adopted
-- You can witness and influence every step of the project's growth
-- You'll be among the earliest contributors
-
-### 💪 How to Contribute
-
-Whether you are:
-- 🎓 A student new to Operations Research
-- 👨‍🔬 An experienced researcher
-- 👩‍💻 A passionate developer
-- 📚 An enthusiastic documentation writer
-
-We welcome your participation:
-
-- 🎯 **Use and Feedback**: Every suggestion drives ORruns to become better
-- 🛠️ **Development**: Whether fixing bugs or adding features, all contributions are welcome
-- 📝 **Documentation**: Help others understand and use ORruns
-- 🌍 **Promotion**: Spread the word to more Operations Research researchers
+As a personal project:
+- Every suggestion is carefully considered
+- You can influence core feature design
+- You'll witness and shape the project's growth
 
 ## 🎯 Roadmap
 
-We're planning exciting features to build a more comprehensive Operations Research experiment ecosystem:
+Exciting features planned for the future:
 
-### Coming Soon
 - 📊 **Enhanced Analytics** (v0.2.0)
   - Dynamic Pareto Front Visualization
   - Advanced Statistical Analysis Tools
@@ -138,11 +108,10 @@ We're planning exciting features to build a more comprehensive Operations Resear
 
 ## 📄 License
 
-ORruns is licensed under the GNU General Public License v3.0 (GPL-3.0) with additional non-commercial terms. This means: if you need to use this software for commercial purposes, please contact the project maintainers for a commercial license.
-See the full license text in the [LICENSE](LICENSE) file.
+ORruns is licensed under the GNU General Public License v3.0 (GPL-3.0). See the [LICENSE](LICENSE) file for details.
 
+## 🌟 Support & Contact
 
-## ☕ Support the Project
 ---
 <a href="https://www.buymeacoffee.com/your_username" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
@@ -160,6 +129,6 @@ See the full license text in the [LICENSE](LICENSE) file.
   <em>By Operations Researchers, For Operations Researchers</em>
   <br>
   <br>
-  If you like this project, please give us a ⭐️
+  If this project helps you, please consider giving it a ⭐️
 </p>
 

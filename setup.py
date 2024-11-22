@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="orruns",
-    version="0.1.2",
+    version="0.1.3",
     description="Next-generation Experiment Management Platform for Operations Research",
     long_description=long_description,
     long_description_content_type="text/markdown",

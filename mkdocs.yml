@@ -1,15 +1,35 @@
-site_name: Your Project Name
+site_name: ORruns 
 theme:
-  name: material
+  name: readthedocs
+  prev_next_buttons_location: both  # 在顶部和底部都显示上一页/下一页按钮
+  navigation_depth: 4  # 设置导航深度
+  collapse_navigation: true  # 允许折叠导航
+  titles_only: false  # 在导航中显示页面标题
 
 # 版本设置
 extra:
-  version:
-    provider: mike
+  version: 0.1.3
+
 
 nav:
   - Home: index.md
+  - Getting Started:
+    - Quick Start: getting-started/quickstart.md
+    - Installation: getting-started/installation.md
+    - Basic Concepts: getting-started/concepts.md
   - User Guide:
-    - Installation: guide/installation.md
-    - Usage: guide/usage.md
-  - API Reference: api.md
+    - CLI Usage: user-guide/cli-usage.md
+    - Experiment Tracking: user-guide/experiment-tracking.md
+    - Experiment Management: user-guide/experiment-management.md  # 添加这行
+    - Parallel Experiments: user-guide/parallel-experiments.md
+    - Visualization: user-guide/visualization.md
+  - Examples:
+    - Basic Usage: examples/basic-usage.md
+    - Advanced Usage: examples/advanced-usage.md
+    - Optimization: examples/optimization.md
+  - API Reference:
+    - CLI: api-reference/cli.md
+    - Decorators: api-reference/decorators.md
+    - Tracker: api-reference/tracker.md
+    - Visualization: api-reference/visualization.md
+  - API: API.md
