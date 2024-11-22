@@ -38,9 +38,9 @@ optimize_quadratic()
 ### NSGA-II Example
 ```python
 from orruns import ExperimentTracker
-from orruns.decorators import repeat_experiment
+from orruns.decorators import experiment_manager
 
-@repeat_experiment(times=5, parallel=True)
+@experiment_manager(times=5, parallel=True)
 def nsga2_optimization(tracker):
     # Configure NSGA-II
     tracker.log_params({

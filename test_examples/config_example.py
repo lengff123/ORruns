@@ -1,4 +1,4 @@
-from orruns import ExperimentConfig, repeat_experiment
+from orruns import ExperimentConfig, experiment_manager
 
 # Create configuration file config.yaml
 """
@@ -22,7 +22,7 @@ experiment:
 config = ExperimentConfig("config.yaml")
 
 # Run experiment with configuration
-@repeat_experiment(
+@experiment_manager(
     times=config.get("experiment.runs", 1),
     parallel=config.get("experiment.parallel", False)
 )

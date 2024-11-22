@@ -1,3 +1,3 @@
-from .commands import cli
+from .commands import ExperimentAPI
 
-__all__ = ['cli']
+__all__ = ['ExperimentAPI']

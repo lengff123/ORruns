@@ -186,12 +186,13 @@ def test_artifacts_with_complex_data(temp_dir):
     assert "complex_data.csv" in artifacts["data"]
     
     # Load and verify data
-    loaded_df = ExperimentTracker.load_artifact(
+    loaded_df = ExperimentTracker.get_artifact(
         tracker.experiment_name,
         tracker.run_id,
         "complex_data.csv",
-        "data",
-        base_dir=temp_dir
+        artifact_type="data",  # 使用 artifact_type 参数
+        base_dir=temp_dir,
+        load_content=True      # 添加 load_content=True 来加载内容
     )
     assert isinstance(loaded_df, pd.DataFrame)
     assert loaded_df.shape == (100, 5)

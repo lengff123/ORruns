@@ -16,7 +16,7 @@ import hashlib
 import uuid
 import json
 from tqdm import tqdm
-from .utils import get_system_info, print_system_info
+from .utils.utils import get_system_info, print_system_info
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -94,21 +94,18 @@ class ResultsMerger:
         
         for key in keys:
             if key in results[0]:
-                # 保存HDF5文件
-                h5_path = array_dir / f"{key}.h5"
-                with h5py.File(h5_path, 'w') as f:
-                    # 保存每次运行的数组和对应的标量
-                    for i, result in enumerate(results):
-                        if isinstance(result[key], np.ndarray):
-                            run_group = f.create_group(f"run_{i}")
-                            # 保存数组
-                            run_group.create_dataset("array", data=result[key])
-                            # 保存相关的标量
-                            for scalar_key in result.keys():
-                                if isinstance(result[scalar_key], (int, float)):
-                                    run_group.attrs[scalar_key] = result[scalar_key]
-                    
-                    # 计算并保存统计信息
+                # 收集所有运行的数据
+                all_data = [result[key] for result in results]
+                
+                # 转换为DataFrame保存
+                if isinstance(all_data[0], (list, np.ndarray)):
+                    df = pd.DataFrame(all_data)
+                    df.to_csv(array_dir / f"{key}.csv")
+                else:
+                    # 其他类型尝试JSON保存
+                    with open(array_dir / f"{key}.json", 'w') as f:
+                        json.dump(all_data, f, indent=4)
+                    #计算并保存统计信息
                     try:
                         arrays = [r[key] for r in results]
                         if all(arr.shape == arrays[0].shape for arr in arrays):
@@ -282,34 +279,78 @@ class ResultsMerger:
                     with open(model_dir / f"model_{i}.pkl", 'wb') as f:
                         pickle.dump(result[key], f)
 
-
+def _serialize_result(result: Any) -> Any:
+    """Serialize results for multiprocessing
+    序列化结果用于多进程"""
+    if isinstance(result, dict):
+        return {k: _serialize_result(v) for k, v in result.items()}
+    elif isinstance(result, list):
+        return [_serialize_result(x) for x in result]
+    elif isinstance(result, np.ndarray):
+        return result.tolist()
+    elif isinstance(result, (np.integer, np.floating)):
+        return float(result)
+    elif isinstance(result, pd.DataFrame):
+        return result.to_dict()
+    elif isinstance(result, pd.Series):
+        return result.to_list()
+    elif hasattr(result, 'to_dict'):
+        return result.to_dict()
+    return result
 def _run_single_experiment(serialized_func, experiment_name, run_index, times, args, kwargs):
     """Top-level function executed in a process
     在进程中执行的顶层函数"""
-    # Deserialize the function
-    # 反序列化函数
-    func = cloudpickle.loads(serialized_func)
-    # Create a tracker
-    # 创建追踪器
-    tracker = ExperimentTracker(experiment_name)
-    tracker.log_params({
-        "run_index": run_index,
-        "total_runs": times,
-        "parallel": True,
-        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
-    })
-    result = func(tracker, *args, **kwargs)
-    # 返回结果和 run_id
-    return result, tracker.run_id
+    print(f"Starting run {run_index + 1}/{times}")
+    try:
+        # Deserialize the function
+        # 反序列化函数
+        func = cloudpickle.loads(serialized_func)
+        # Create a tracker
+        # 创建追踪器
+        tracker = ExperimentTracker(experiment_name)
+        tracker.log_params({
+            "run_index": run_index,
+            "total_runs": times,
+            "parallel": True,
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+        })
+        result = func(tracker, *args, **kwargs)
+        print(f"Run {run_index + 1}/{times} completed")
+        # 返回结果和 run_id
+        serialized_result = _serialize_result(result)
+        return serialized_result, tracker.run_id
+    except Exception as e:
+        print(f"Run {run_index + 1}/{times} failed: {str(e)}")
+        raise
 
-def repeat_experiment(
+def experiment_manager(
     times: int = 1,
     experiment_name: Optional[str] = None,
     parallel: bool = False,
     max_workers: Optional[int] = None,
     merge_config: Optional[Dict] = None,
-    detailed_system_info: bool = False  # 添加系统信息详细程度选项
+    system_info_level: str = 'basic',  # 改为 level 参数: 'none', 'basic', 'full'
+    print_style: str = 'auto'  # 添加打印样式参数: 'auto', 'rich', 'simple', 'markdown'
 ):
+    """
+    实验重复执行装饰器
+    
+    Args:
+        times: 重复次数
+        experiment_name: 实验名称
+        parallel: 是否并行执行
+        max_workers: 最大工作进程数
+        merge_config: 结果合并配置
+        system_info_level: 系统信息详细程度
+            - 'none': 只返回基本实验配置
+            - 'basic': 返回运筹学论文常用的关键信息（默认）
+            - 'full': 返回所有可获取的系统信息
+        print_style: 系统信息打印样式
+            - 'auto': 自动选择最佳样式（默认）
+            - 'rich': 使用rich库的完整样式
+            - 'simple': 简单文本样式
+            - 'markdown': Markdown表格样式
+    """
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -323,9 +364,14 @@ def repeat_experiment(
                 parallel=parallel,
                 times=times,
                 max_workers=max_workers,
-                detailed=detailed_system_info
+                level=system_info_level  # 使用新的 level 参数
             )
-            print_system_info(system_info)
+            
+            # 打印系统信息
+            print_system_info(
+                system_info,
+                style=print_style  # 使用指定的打印样式
+            )
 
             results = []
             run_ids = []  # 收集实际的运行ID

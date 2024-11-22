@@ -1,90 +1,134 @@
-# ORruns 
- **ORruns** is a lightweight experiment management tool tailored specifically for Operations Research, designed to simplify experiment tracking and visualization.  
- ## Key Features 
- - 🔍 **Experiment Tracking**: Track and organize your experiments with ease, ensuring every detail is recorded.
- - 📊 **Web Dashboard**: Access a comprehensive dashboard for quick visualization and insights into your experiment results. 
- - 🔄 **Parallel Experiments**: Run multiple experiments in parallel to speed up the research process. 
- - ⚙️ **Configuration Management**: Seamlessly manage and switch between different configurations for flexible experimentation.  ## Installation To install ORruns, simply use the following command: 
- ```bash # Installation command here (e.g., pip install orruns) ```
 
-## Quick Start
 
-Jump right in! Start tracking your experiments in just a few steps:
+<p align="center">
+  <img src="https://github.com/lengff123/ORruns/raw/main/orruns/assets/logo.png" alt="ORruns Logo" width="200"/>
+  <br>
+  <em>ORruns:Next-generation Experiment Management Platform for Operations Research</em>
+</p>
 
-### Basic Usage
+> 🌱 ORruns is a growing personal project. As a passionate Operations Research developer, I aim to help researchers improve their experiment efficiency. Join me in making OR experiment management easier!
 
-Set up and manage your experiments quickly with ORruns’ easy-to-use interface.
-```python
-from orruns import ExperimentTracker
+<p align="center">
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#why-orruns">Why ORruns</a> •
+  <a href="#features">Features</a> •
+  <a href="#community">Contribute</a>
+</p>
 
-# Create tracker and log experiment
-tracker = ExperimentTracker("optimization_experiment")
+---
 
-# Log parameters
-tracker.log_params({
-    "algorithm": "VNS",
-    "max_iterations": 1000,
-    "neighborhood_types": ["swap", "insert"]
-})
+## Why ORruns?
 
-# Log metrics
-tracker.log_metrics({
-    "objective_value": 42.0,
-    "computation_time": 1.23
-})
-```
-### Repeated Experiments
+During my Operations Research studies, I frequently encountered these challenges:
 
-Efficiently handle and track repeated experiments with streamlined workflows.
+- 📊 Experimental data scattered across different locations
+- 🔄 Tedious experiment repetition and messy parameter management
+- 📈 Repetitive visualization code writing
+- 🤝 Lack of unified experiment management platform
+
+**ORruns** was born to solve these problems! I aim to provide OR researchers with a modern, intuitive, and powerful experiment management tool.
+
+## ✨ Features
+
+### Elegant Experiment Management
 
 ```python
-from orruns import repeat_experiment
-
-@repeat_experiment(times=3, parallel=True)
-def optimize_function(tracker):
-    # Your optimization code here
-    result = 42
-    tracker.log_metrics({"objective": result})
+@experiment_manager(times=10, parallel=True)
+def optimize_problem(tracker):
+    # Configure experiment parameters
+    tracker.log_params({
+        "population_size": 100,
+        "generations": 1000
+    })
+    
+    # Run optimization
+    result = optimize()
+    
+    # Track results automatically
+    tracker.log_metrics({
+        "pareto_front_size": len(result.pareto_front),
+        "hypervolume": result.hypervolume
+    })
+    tracker.log_artifact("pareto_front.png", plt.gcf())
+    
     return result
 ```
 
-### Configuration Management
+### Intuitive Web Interface
+<p align="center">
+  <img src="orruns/assets/web.png" alt="Dashboard Screenshot" width="600"/>
+</p>
 
-Manage experiment configurations easily to test and iterate on different setups.
+## 🚀 Vision
 
-### Visualization
+```bash
+pip install orruns
+```
 
-Gain quick insights with intuitive visualization tools, making it easier to analyze and interpret results.
+Check out our [Quick Start Guide](https://orruns.readthedocs.io) to begin your first experiment!
 
-## Documentation
 
-For detailed usage instructions and advanced features, please refer to our [documentation](#).
 
-Roadmap
-Version 0.2.0
-[ ] Advanced visualization features
-[ ] Statistical analysis tools
-[ ] Experiment comparison tools
-Version 0.3.0
-[ ] Experiment backup and restore
-[ ] Result export (CSV, LaTeX)
-[ ] Command-line interface
-Version 0.4.0
-[ ] Integration with other OR tools
-[ ] Custom plugin support
-[ ] Performance optimization
-## Community and Contribution
+## 🚀 Making Operations Research Better
 
-ORruns is an open-source project under the GNU License. We believe in the power of community and invite contributors from all backgrounds to join us in building and improving this tool. Whether you're a researcher, developer, or enthusiast in Operations Research, your insights and expertise are valuable to us.
+We believe that the Operations Research community deserves modern and open tooling ecosystems like those in the machine learning community. ORruns is not just a tool, but a vision - let's together:
 
-Join our community to:
+- 🌟 Build an open, active Operations Research community
+- 🔧 Create better experiment management tools
+- 📚 Share knowledge and best practices
+- 🤝 Facilitate academic exchange
 
-- **Suggest new features**: Help shape the direction of ORruns by proposing new ideas.
-- **Report issues**: Encountered a bug? Let us know so we can improve the tool.
-- **Contribute code**: Add new features, fix bugs, or optimize existing code.
+## 💡 Get Involved
 
-Together, we can build a robust, user-friendly tool that accelerates the pace of research in Operations Research. Let’s create a collaborative, supportive community where we can share knowledge and grow together.
+> "Good tools make research twice as efficient. Join me in making OR experiment management better!"
 
-## License
+### 🌱 Growing Together
 
-ORruns is distributed under the MIT License.
+As a personal project:
+- Every suggestion is carefully considered
+- You can influence core feature design
+- You'll witness and shape the project's growth
+
+## 🎯 Roadmap
+
+Exciting features planned for the future:
+
+- 📊 **Enhanced Analytics** (v0.2.0)
+  - Dynamic Pareto Front Visualization
+  - Advanced Statistical Analysis Tools
+  - Experiment Comparison System
+
+- 🛠️ **Improved User Experience** (v0.3.0)
+  - Experiment Backup and Recovery
+  - Publication-Ready Results Export
+  - Powerful Command Line Tools
+
+> Check out the complete [roadmap document](ROADMAP.md) for more details and future plans!
+
+
+## 📄 License
+
+ORruns is licensed under the GNU General Public License v3.0 (GPL-3.0). See the [LICENSE](LICENSE) file for details.
+
+## 🌟 Support & Contact
+
+---
+<a href="https://www.buymeacoffee.com/your_username" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+
+## 🌟 Join the Community
+
+- 💬 [Join Discussions](https://github.com/lengff123/ORruns/discussions)
+- 🐛 [Report Issues](https://github.com/lengff123/ORruns/issues)
+- 📫 [Mailing List](mailto:your-email@example.com)
+
+
+
+
+<p align="center">
+  <em>By Operations Researchers, For Operations Researchers</em>
+  <br>
+  <br>
+  If this project helps you, please consider giving it a ⭐️
+</p>
+

@@ -5,7 +5,7 @@
 ### Complex Experiment Structure
 ```python
 from orruns import ExperimentTracker
-from orruns.decorators import repeat_experiment
+from orruns.decorators import experiment_manager
 import numpy as np
 import pandas as pd
 

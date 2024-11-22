@@ -1,83 +1,116 @@
 # ExperimentTracker API Reference
 
-## Class: ExperimentTracker
+## Overview
 
-Main class for tracking experiments in ORruns.
-
-### Constructor
+`ExperimentTracker` is the core class for managing experiments in ORruns.
 
 ```python
-ExperimentTracker(
-    name: str,
-    description: str = None,
-    tags: List[str] = None,
-    base_dir: str = None
-) -> ExperimentTracker
+from orruns import ExperimentTracker
+
+tracker = ExperimentTracker(
+    name="experiment_name",
+    base_dir="./orruns_experiments"
+)
 ```
 
-#### Parameters:
-- `name` (str): Unique name for the experiment
-- `description` (str, optional): Detailed description
-- `tags` (List[str], optional): Tags for categorizing experiments
-- `base_dir` (str, optional): Base directory for storing experiment data
+## Core Methods
 
-### Methods
+### Log Parameters
 
-#### log_params
 ```python
-def log_params(self, params: Dict[str, Any]) -> None
+tracker.log_params({
+    "solver": "cplex",
+    "threads": 4,
+    "time_limit": 600
+})
 ```
-Log experiment parameters.
 
-#### log_metrics
+### Log Metrics
+
 ```python
-def log_metrics(self, metrics: Dict[str, Union[float, int]]) -> None
+tracker.log_metrics({
+    "objective": 123.45,
+    "solve_time": 10.5,
+    "gap": 0.01
+})
 ```
-Log experiment metrics.
 
-#### log_artifact
+### Save Artifacts
+
 ```python
-def log_artifact(
-    self,
-    name: str,
-    artifact: Union[str, bytes, pd.DataFrame],
-    artifact_type: str = None
-) -> None
+# Save plots
+tracker.log_artifact("convergence.png", plt.gcf())
+
+# Save data files
+tracker.log_artifact("solution.csv", df)
 ```
-Save experiment artifacts.
 
-#### start_run
-```python
-def start_run(self, run_id: str = None) -> ContextManager
-```
-Start a new experiment run.
+## Context Manager
 
-#### end_run
-```python
-def end_run(self) -> None
-```
-End current experiment run.
-
-### Properties
-
-#### experiment_dir
-```python
-@property
-def experiment_dir(self) -> str
-```
-Get experiment directory path.
-
-#### current_run_id
-```python
-@property
-def current_run_id(self) -> str
-```
-Get current run identifier.
-
-### Context Manager Support
-
-The ExperimentTracker can be used as a context manager:
 ```python
 with ExperimentTracker("experiment_name") as tracker:
+    tracker.log_params({"solver": "gurobi"})
     # Your experiment code
+    tracker.log_metrics({"objective": result.value})
 ```
+
+## Class Methods
+
+### Delete Experiments
+
+```python
+# Delete specific experiment
+ExperimentTracker.delete_experiment("experiment_name")
+
+# Delete specific run
+ExperimentTracker.delete_experiment(
+    "experiment_name",
+    run_id="run_20240315_123456"
+)
+```
+
+### Clean Old Experiments
+
+```python
+# Delete experiments older than 30 days
+ExperimentTracker.delete_all_experiments()
+```
+
+## Properties
+
+- `experiment_name`: Name of the experiment
+- `run_id`: Unique identifier for current run
+- `base_dir`: Base directory for experiment data
+
+## Directory Structure
+
+```
+base_dir/
+└── experiment_name/
+    └── run_id/
+        ├── params/
+        │   └── params.json
+        ├── metrics/
+        │   └── metrics.json
+        └── artifacts/
+            ├── figures/
+            └── data/
+```
+
+## Best Practices
+
+1. Use descriptive experiment names
+2. Log all relevant parameters
+3. Save intermediate results
+4. Use context manager for automatic cleanup
+5. Organize artifacts by type
+
+## Error Handling
+
+Common errors and solutions:
+
+| Error | Solution |
+|-------|----------|
+| `FileNotFoundError` | Check base directory exists |
+| `PermissionError` | Check write permissions |
+| `ValueError` | Verify parameter/metric format |

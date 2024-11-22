@@ -15,7 +15,7 @@ pip install orruns
 
 ### From Source
 ```bash
-git clone https://github.com/yourusername/ORruns.git
+git clone https://github.com/lengff123/ORruns.git
 cd ORruns
 pip install -e .
 ```
@@ -57,4 +57,4 @@ python --version
 pip install --upgrade pip
 ```
 
-3. If you face any issues, please [report them](https://github.com/yourusername/ORruns/issues)
+3. If you face any issues, please [report them](git clone https://github.com/lengff123/ORruns/issues)

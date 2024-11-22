@@ -41,9 +41,9 @@ with ExperimentTracker("simple_optimization") as tracker:
 
 ```python
 from orruns import ExperimentTracker
-from orruns.decorators import repeat_experiment
+from orruns.decorators import experiment_manager
 
-@repeat_experiment(times=5)
+@experiment_manager(times=5)
 def nsga2_experiment(tracker):
     # Initialize NSGA-II
     problem = MultiObjectiveProblem()

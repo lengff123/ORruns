@@ -1,7 +1,7 @@
 # ORruns: Next-generation Experiment Management for Operations Research
 
 <p align="center">
-  <img src="../orruns/assets/logo.png" alt="ORruns Logo" width="200"/>
+  <img src="https://github.com/lengff123/ORruns/raw/main/orruns/assets/logo.png" alt="ORruns Logo" width="200"/>
 </p>
 
 ORruns is a powerful experiment management platform designed specifically for Operations Research. It provides researchers with tools to track, manage, and visualize their optimization experiments efficiently.
